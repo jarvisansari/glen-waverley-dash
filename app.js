@@ -62,25 +62,25 @@ function updateTime() {
     };
     
     document.getElementById('time').textContent = now.toLocaleTimeString('en-AU', timeOptions);
-    document.getElementById('date').textContent = now.toLocaleDateString('en-AU', dateOptions);
+    document.getElementById('date').textContent = now.toLocaleDateString('en-AU', dateOptions).toUpperCase();
 }
 
-// Get UV status text
-function getUVStatus(uv) {
-    if (uv <= 2) return 'Low';
-    if (uv <= 5) return 'Moderate';
-    if (uv <= 7) return 'High';
-    if (uv <= 10) return 'Very High';
-    return 'Extreme';
+// Get UV status text and warning
+function getUVInfo(uv) {
+    if (uv <= 2) return { status: 'Low', warning: 'No protection required' };
+    if (uv <= 5) return { status: 'Moderate', warning: 'Some protection recommended' };
+    if (uv <= 7) return { status: 'High', warning: 'Protection essential' };
+    if (uv <= 10) return { status: 'Very High', warning: 'Extra protection needed' };
+    return { status: 'Extreme', warning: 'Avoid outdoor exposure' };
 }
 
-// Get AQI status
-function getAQIStatus(aqi) {
-    if (aqi <= 50) return { text: 'Good', class: 'good' };
-    if (aqi <= 100) return { text: 'Moderate', class: 'moderate' };
-    if (aqi <= 150) return { text: 'Unhealthy (Sensitive)', class: 'poor' };
-    if (aqi <= 200) return { text: 'Unhealthy', class: 'poor' };
-    return { text: 'Hazardous', class: 'hazardous' };
+// Get AQI status and class
+function getAQIInfo(aqi) {
+    if (aqi <= 50) return { text: 'GOOD', class: 'good' };
+    if (aqi <= 100) return { text: 'MODERATE', class: 'moderate' };
+    if (aqi <= 150) return { text: 'UNHEALTHY (SENSITIVE)', class: 'poor' };
+    if (aqi <= 200) return { text: 'UNHEALTHY', class: 'poor' };
+    return { text: 'HAZARDOUS', class: 'hazardous' };
 }
 
 // Format time from ISO string
@@ -101,13 +101,38 @@ function getDayName(dateString) {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
-    if (date.toDateString() === today.toDateString()) return 'Today';
-    if (date.toDateString() === tomorrow.toDateString()) return 'Tomorrow';
+    if (date.toDateString() === today.toDateString()) return 'TODAY';
+    if (date.toDateString() === tomorrow.toDateString()) return 'TOMORROW';
     
     return date.toLocaleDateString('en-AU', { 
         timeZone: TIMEZONE,
         weekday: 'short' 
-    });
+    }).toUpperCase();
+}
+
+// Update UV alert banner
+function updateUVAlert(uv) {
+    const banner = document.getElementById('alert-banner');
+    const alertLevel = document.getElementById('uv-alert');
+    const alertText = document.getElementById('uv-alert-text');
+    
+    if (uv > 5) {
+        banner.style.display = 'flex';
+        if (uv > 10) {
+            alertLevel.textContent = 'UV EXTREME';
+            alertText.textContent = 'AVOID OUTDOOR EXPOSURE 10AM-4PM';
+            banner.style.borderColor = '#ff3a3a';
+            banner.style.background = 'linear-gradient(90deg, rgba(255,58,58,0.15), transparent, rgba(255,58,58,0.15))';
+        } else if (uv > 7) {
+            alertLevel.textContent = 'UV VERY HIGH';
+            alertText.textContent = 'EXTRA PROTECTION REQUIRED — SEEK SHADE';
+        } else {
+            alertLevel.textContent = 'UV HIGH';
+            alertText.textContent = 'PROTECTION ESSENTIAL — SLIP SLOP SLAP';
+        }
+    } else {
+        banner.style.display = 'none';
+    }
 }
 
 // Fetch weather data from Open-Meteo
@@ -123,7 +148,7 @@ async function fetchWeather() {
         document.getElementById('temp').textContent = `${Math.round(current.temperature_2m)}°`;
         document.getElementById('feels-like').textContent = `${Math.round(current.apparent_temperature)}°`;
         document.getElementById('humidity').textContent = `${current.relative_humidity_2m}%`;
-        document.getElementById('wind').textContent = `${Math.round(current.wind_speed_10m)} km/h`;
+        document.getElementById('wind').textContent = `${Math.round(current.wind_speed_10m)}km/h`;
         document.getElementById('weather-icon').textContent = weatherIcons[current.weather_code] || '🌡️';
         
         // Sun times
@@ -133,8 +158,11 @@ async function fetchWeather() {
         
         // UV Index
         const uvIndex = daily.uv_index_max[0];
+        const uvInfo = getUVInfo(uvIndex);
         document.getElementById('uv').textContent = uvIndex.toFixed(1);
-        document.getElementById('uv-status').textContent = getUVStatus(uvIndex);
+        document.getElementById('uv-status').textContent = uvInfo.status.toUpperCase();
+        document.getElementById('uv-warning').textContent = uvInfo.warning;
+        updateUVAlert(uvIndex);
         
         // Forecast
         const forecastHTML = [];
@@ -143,7 +171,7 @@ async function fetchWeather() {
                 <div class="forecast-day">
                     <span class="forecast-date">${getDayName(daily.time[i])}</span>
                     <span class="forecast-icon">${weatherIcons[daily.weather_code[i]] || '🌡️'}</span>
-                    <span class="forecast-temp">${Math.round(daily.temperature_2m_max[i])}° / ${Math.round(daily.temperature_2m_min[i])}°</span>
+                    <span class="forecast-temp"><span class="high">${Math.round(daily.temperature_2m_max[i])}°</span> / <span class="low">${Math.round(daily.temperature_2m_min[i])}°</span></span>
                 </div>
             `);
         }
@@ -164,12 +192,18 @@ async function fetchAirQuality() {
         
         const current = data.current;
         const aqi = current.us_aqi;
-        const status = getAQIStatus(aqi);
+        const info = getAQIInfo(aqi);
         
-        document.getElementById('aqi').textContent = aqi;
+        // Update AQI value and styling
+        const aqiEl = document.getElementById('aqi');
+        const aqiFillEl = document.getElementById('aqi-fill');
         const statusEl = document.getElementById('aqi-status');
-        statusEl.textContent = status.text;
-        statusEl.className = `aqi-status ${status.class}`;
+        
+        aqiEl.textContent = aqi;
+        aqiEl.className = `aqi-value ${info.class}`;
+        aqiFillEl.className = `aqi-fill ${info.class}`;
+        statusEl.textContent = info.text;
+        statusEl.className = `aqi-status ${info.class}`;
         
         document.getElementById('pm25').textContent = `${current.pm2_5.toFixed(1)} µg/m³`;
         document.getElementById('pm10').textContent = `${current.pm10.toFixed(1)} µg/m³`;
@@ -192,8 +226,9 @@ function updateTimestamp() {
         timeZone: TIMEZONE,
         hour: '2-digit',
         minute: '2-digit',
+        second: '2-digit',
         hour12: false
-    });
+    }) + ' AEST';
 }
 
 // Initialize
