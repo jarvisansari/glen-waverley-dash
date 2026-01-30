@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glen Waverley // Live Intel</title>
+    <title>Australia Live // Weather Intel</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📍</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇦🇺</text></svg>">
 </head>
 <body>
     <div class="container">
@@ -15,13 +15,24 @@
                     <span class="status-dot"></span>
                     <span>SYSTEMS ONLINE</span>
                 </div>
-                <div>-37.8781° / 145.1614°</div>
+                <div class="coords" id="coords">--° / --°</div>
             </div>
-            <h1>GLEN WAVERLEY</h1>
-            <p class="subtitle">VIC 3150 · AUSTRALIA · REAL-TIME MONITORING</p>
+            
+            <!-- Location Search -->
+            <div class="location-search">
+                <div class="search-container">
+                    <span class="search-icon">📍</span>
+                    <input type="text" id="location-input" placeholder="Search Australian location..." autocomplete="off">
+                    <button class="search-btn" id="search-btn">SEARCH</button>
+                </div>
+                <div class="search-results" id="search-results"></div>
+            </div>
+            
+            <h1 id="location-name">LOADING...</h1>
+            <p class="subtitle" id="location-subtitle">AUSTRALIA · REAL-TIME MONITORING</p>
         </header>
 
-        <div class="alert-banner" id="alert-banner">
+        <div class="alert-banner" id="alert-banner" style="display: none;">
             <span class="alert-level" id="uv-alert">⚠ UV ALERT</span>
             <span class="alert-text" id="uv-alert-text">HIGH UV DETECTED — PROTECTION REQUIRED</span>
         </div>
@@ -31,7 +42,7 @@
             <div class="card time-card cyan-top">
                 <div class="card-header">
                     <span class="card-label"><span class="icon">🕐</span> Local Time</span>
-                    <span class="card-status">AEST</span>
+                    <span class="card-status">AEST/AEDT</span>
                 </div>
                 <div class="card-body">
                     <div class="time-display" id="time">--:--:--</div>
@@ -127,29 +138,29 @@
                 </div>
             </div>
 
-            <!-- Location Stats -->
+            <!-- Location Info -->
             <div class="card stats-card cyan-top">
                 <div class="card-header">
-                    <span class="card-label"><span class="icon">📊</span> Area Intel</span>
-                    <span class="card-status">STATIC</span>
+                    <span class="card-label"><span class="icon">📊</span> Location Intel</span>
+                    <span class="card-status">GEO</span>
                 </div>
                 <div class="card-body">
                     <div class="stats-grid">
                         <div class="stat">
-                            <span class="stat-value">3150</span>
+                            <span class="stat-value" id="stat-postcode">--</span>
                             <span class="stat-label">Postcode</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-value">~22K</span>
-                            <span class="stat-label">Population</span>
+                            <span class="stat-value" id="stat-state">--</span>
+                            <span class="stat-label">State</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-value">22km</span>
-                            <span class="stat-label">From CBD</span>
+                            <span class="stat-value" id="stat-elevation">--</span>
+                            <span class="stat-label">Elevation</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-value">Monash</span>
-                            <span class="stat-label">Council</span>
+                            <span class="stat-value" id="stat-timezone">--</span>
+                            <span class="stat-label">Timezone</span>
                         </div>
                     </div>
                 </div>
@@ -158,54 +169,30 @@
             <!-- Forecast -->
             <div class="card forecast-card wide">
                 <div class="card-header">
-                    <span class="card-label"><span class="icon">📅</span> 3-Day Forecast</span>
+                    <span class="card-label"><span class="icon">📅</span> 5-Day Forecast</span>
                     <span class="card-status live">● LIVE</span>
                 </div>
                 <div class="card-body">
                     <div class="forecast-grid" id="forecast">
-                        <div class="forecast-day">
+                        <div class="forecast-day loading">
                             <span class="forecast-date">--</span>
                             <span class="forecast-icon">--</span>
-                            <span class="forecast-temp"><span class="high">--°</span> / <span class="low">--°</span></span>
-                        </div>
-                        <div class="forecast-day">
-                            <span class="forecast-date">--</span>
-                            <span class="forecast-icon">--</span>
-                            <span class="forecast-temp"><span class="high">--°</span> / <span class="low">--°</span></span>
-                        </div>
-                        <div class="forecast-day">
-                            <span class="forecast-date">--</span>
-                            <span class="forecast-icon">--</span>
-                            <span class="forecast-temp"><span class="high">--°</span> / <span class="low">--°</span></span>
+                            <span class="forecast-temp">--</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Public Transport -->
-            <div class="card transport-card cyan-top">
+            <!-- Recent Locations -->
+            <div class="card recent-card cyan-top">
                 <div class="card-header">
-                    <span class="card-label"><span class="icon">🚆</span> Transit Hub</span>
-                    <span class="card-status">PTV</span>
+                    <span class="card-label"><span class="icon">📌</span> Recent Locations</span>
+                    <span class="card-status">SAVED</span>
                 </div>
                 <div class="card-body">
-                    <div class="transport-name">Glen Waverley Station</div>
-                    <div class="line-badge">Glen Waverley Line</div>
-                    <div class="transport-info">
-                        <div>End of line · Zone 2</div>
-                        <div>~40 min to Flinders St</div>
+                    <div class="recent-list" id="recent-list">
+                        <div class="recent-empty">No recent locations</div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Random Fact -->
-            <div class="card fact-card cyan-top">
-                <div class="card-header">
-                    <span class="card-label"><span class="icon">💡</span> Local Intel</span>
-                    <span class="card-status">ROTATING</span>
-                </div>
-                <div class="card-body">
-                    <div class="fact-text" id="fact">Loading local intelligence...</div>
                 </div>
             </div>
         </div>
