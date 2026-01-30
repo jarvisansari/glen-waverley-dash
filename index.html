@@ -13,25 +13,25 @@
             <div class="header-top">
                 <div class="status-badge">
                     <span class="status-dot"></span>
-                    <span>SYSTEMS OPERATIONAL</span>
+                    <span>SYSTEMS ONLINE</span>
                 </div>
-                <div>COORDINATES: -37.8781° / 145.1614°</div>
+                <div>-37.8781° / 145.1614°</div>
             </div>
             <h1>GLEN WAVERLEY</h1>
             <p class="subtitle">VIC 3150 · AUSTRALIA · REAL-TIME MONITORING</p>
         </header>
 
         <div class="alert-banner" id="alert-banner">
-            <span class="alert-level" id="uv-alert">UV ALERT</span>
+            <span class="alert-level" id="uv-alert">⚠ UV ALERT</span>
             <span class="alert-text" id="uv-alert-text">HIGH UV DETECTED — PROTECTION REQUIRED</span>
         </div>
 
         <div class="grid">
             <!-- Time -->
-            <div class="card time-card">
+            <div class="card time-card cyan-top">
                 <div class="card-header">
-                    <span class="card-label">Local Time</span>
-                    <span class="card-status">AEST/AEDT</span>
+                    <span class="card-label"><span class="icon">🕐</span> Local Time</span>
+                    <span class="card-status">AEST</span>
                 </div>
                 <div class="card-body">
                     <div class="time-display" id="time">--:--:--</div>
@@ -42,8 +42,8 @@
             <!-- Weather -->
             <div class="card weather-card">
                 <div class="card-header">
-                    <span class="card-label">Weather Intel</span>
-                    <span class="card-status">LIVE</span>
+                    <span class="card-label"><span class="icon">🌡</span> Weather Intel</span>
+                    <span class="card-status live">● LIVE</span>
                 </div>
                 <div class="card-body">
                     <div class="weather-main">
@@ -70,7 +70,7 @@
             <!-- Air Quality -->
             <div class="card aqi-card">
                 <div class="card-header">
-                    <span class="card-label">Air Quality Index</span>
+                    <span class="card-label"><span class="icon">💨</span> Air Quality</span>
                     <span class="card-status">US EPA</span>
                 </div>
                 <div class="card-body">
@@ -91,7 +91,7 @@
             <!-- UV Index -->
             <div class="card uv-card">
                 <div class="card-header">
-                    <span class="card-label">UV Index</span>
+                    <span class="card-label"><span class="icon">☀️</span> UV Index</span>
                     <span class="card-status">PEAK</span>
                 </div>
                 <div class="card-body">
@@ -106,9 +106,9 @@
             </div>
 
             <!-- Sun Times -->
-            <div class="card sun-card">
+            <div class="card sun-card cyan-top">
                 <div class="card-header">
-                    <span class="card-label">Solar Tracking</span>
+                    <span class="card-label"><span class="icon">🌅</span> Solar Tracking</span>
                     <span class="card-status">TODAY</span>
                 </div>
                 <div class="card-body">
@@ -128,9 +128,9 @@
             </div>
 
             <!-- Location Stats -->
-            <div class="card stats-card">
+            <div class="card stats-card cyan-top">
                 <div class="card-header">
-                    <span class="card-label">Area Intelligence</span>
+                    <span class="card-label"><span class="icon">📊</span> Area Intel</span>
                     <span class="card-status">STATIC</span>
                 </div>
                 <div class="card-body">
@@ -158,8 +158,8 @@
             <!-- Forecast -->
             <div class="card forecast-card wide">
                 <div class="card-header">
-                    <span class="card-label">3-Day Forecast</span>
-                    <span class="card-status">OPEN-METEO</span>
+                    <span class="card-label"><span class="icon">📅</span> 3-Day Forecast</span>
+                    <span class="card-status live">● LIVE</span>
                 </div>
                 <div class="card-body">
                     <div class="forecast-grid" id="forecast">
@@ -183,25 +183,25 @@
             </div>
 
             <!-- Public Transport -->
-            <div class="card transport-card">
+            <div class="card transport-card cyan-top">
                 <div class="card-header">
-                    <span class="card-label">Transit Hub</span>
+                    <span class="card-label"><span class="icon">🚆</span> Transit Hub</span>
                     <span class="card-status">PTV</span>
                 </div>
                 <div class="card-body">
                     <div class="transport-name">Glen Waverley Station</div>
                     <div class="line-badge">Glen Waverley Line</div>
                     <div class="transport-info">
-                        <div>◆ End of line · Zone 2</div>
-                        <div>◆ ~40 min to Flinders St</div>
+                        <div>End of line · Zone 2</div>
+                        <div>~40 min to Flinders St</div>
                     </div>
                 </div>
             </div>
 
             <!-- Random Fact -->
-            <div class="card fact-card">
+            <div class="card fact-card cyan-top">
                 <div class="card-header">
-                    <span class="card-label">Local Intel</span>
+                    <span class="card-label"><span class="icon">💡</span> Local Intel</span>
                     <span class="card-status">ROTATING</span>
                 </div>
                 <div class="card-body">
@@ -211,9 +211,9 @@
         </div>
 
         <footer>
-            <div class="update-time">LAST SYNC: <span id="last-update">--</span></div>
+            <div class="update-time">Last Sync: <span id="last-update">--</span></div>
             <div class="credits">
-                DATA: <a href="https://open-meteo.com" target="_blank">OPEN-METEO API</a> · BUILT BY JARVIS 🤖
+                Data: <a href="https://open-meteo.com" target="_blank">Open-Meteo API</a> · Built by Jarvis 🤖
             </div>
         </footer>
     </div>
